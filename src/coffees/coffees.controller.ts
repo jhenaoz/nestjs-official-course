@@ -1,33 +1,42 @@
-/* eslint-disable @typescript-eslint/explicit-module-boundary-types */
-import { Controller, Get, Param, Post, Body, HttpCode, HttpStatus, Delete, Patch, Query } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  Param,
+  Patch,
+  Post,
+  Query,
+} from '@nestjs/common';
+import { CoffeesService } from './coffees.service';
 
 @Controller('coffees')
 export class CoffeesController {
+  constructor(private readonly coffeesService: CoffeesService) {}
 
   @Get()
   findAll(@Query() paginationQuery) {
-    const {limit, offset} = paginationQuery;
-    return 'this aciton return all the coffees' + 'Limit'  + limit;
+    // const { limit, offset } = paginationQuery;
+    return this.coffeesService.findAll();
   }
 
   @Get(':id')
-  findOne( @Param('id') id: string) {
-    return `This action returns #${id} coffee`;
+  findOne(@Param('id') id: string) {
+    return this.coffeesService.findOne(id);
   }
 
   @Post()
-  @HttpCode(HttpStatus.GONE)
   create(@Body() body) {
-    return body;
-  }
-
-  @Delete(':id')
-  delete(@Param('id') id: string) {
-    return `this actions removes #${id} coffee`;
+    return this.coffeesService.create(body);
   }
 
   @Patch(':id')
   update(@Param('id') id: string, @Body() body) {
-    return `this actions update #${id} coffee`;
+    return this.coffeesService.update(id, body);
+  }
+
+  @Delete(':id')
+  remove(@Param('id') id: string) {
+    return this.coffeesService.remove(id);
   }
 }
